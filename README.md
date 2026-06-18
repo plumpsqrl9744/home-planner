@@ -6,8 +6,10 @@
 
 ## 기능
 
+- **레버리지 최적화 (핵심)** — "현금을 집(자기자본)과 대출+투자에 어떻게 배분해야 유리한가". 대출 받을 금액을 슬라이더로 조절하면 남는 현금이 자동으로 ETF 투자에 투입됩니다. 대출액을 0~상한까지 스윕해 **순자산이 최대가 되는 대출액**과 **월 흑자를 유지하는 안정 최적점**을 함께 제시합니다. (투자수익률 > 대출금리면 레버리지 유리)
+- **공통 기본정보 공유** — 보유현금·연소득·생활비·신용대출·투자가정을 한 번 입력하면 시나리오 A·B에 자동 반영
 - **주거 형태별 동적 입력** — 행복주택(임대) / 전세 / 일반 매매 선택 시 입력 필드가 동적으로 변경
-- **대출 한도 로직** — `min(LTV 한도, DSR 40% 한도)` 확정. 생애최초·스트레스 DSR 반영. 신용대출은 원금을 만기(5년)로 분할한 연 부담을 DSR에 반영
+- **대출 한도 로직** — `min(LTV 한도, DSR 40% 한도)`를 상한으로, 희망 대출액을 클램프. 생애최초·스트레스 DSR 반영. 신용대출은 원금을 만기(5년)로 분할한 연 부담을 DSR에 반영
 - **취득세/부대비용 자동 계산** — 집값의 3%를 초기 필요 현금에 자동 반영
 - **연복리 자산 시뮬레이션** — 부동산 평가액 + 금융자산(ETF) + 회수가능 보증금 − 잔여 대출원금 = 순자산
 - **보증금 자산화** — 전세 자기부담 보증금·행복주택 보증금을 만기/퇴거 시 회수되는 자산으로 순자산에 반영(주거 형태 간 공정한 비교)
@@ -19,7 +21,7 @@
 
 ## 기술 스택
 
-React 18 + TypeScript (Vite) · Tailwind CSS · Zustand · Recharts · Vitest
+React 18 + TypeScript (Vite) · Tailwind CSS · react-hook-form · Recharts · Vitest
 
 ## 실행
 
@@ -36,19 +38,24 @@ npm run build    # 프로덕션 빌드
 src/
 ├─ config/       정책 수치(LTV/DSR/취득세/자치구 규제) 전부 분리 — 하드코딩 0
 ├─ lib/          순수 계산 엔진(UI 의존성 0) + 단위 테스트
-│  ├─ loan       원리금균등상환 · LTV/DSR 한도 · min 확정
+│  ├─ loan       원리금균등상환 · LTV/DSR 한도 · 희망 대출액 클램프
 │  ├─ tax        취득세/부대비용 · 초기 필요 현금
 │  ├─ cashflow   월 고정지출 · 순저축
 │  ├─ projection 연복리 자산 성장 · 잔여 원금 · 순자산 추이
-│  └─ simulate   시나리오 1개의 전체 결과 조합
-├─ store/        Zustand 시나리오(A/B) 상태
+│  ├─ simulate   시나리오 1개의 전체 결과 조합
+│  ├─ leverage   대출액 스윕 → 순자산 곡선 · 최적 레버리지 탐색
+│  └─ adapter    공통 기본정보 + 시나리오 설정 → Scenario 변환
 ├─ components/
-│  ├─ ui/         재사용 프리미티브 (Card, NumberInput, Select ...)
-│  ├─ inputs/     주거형태 동적 입력 · 공통 · 정책 · 투자
-│  ├─ dashboard/  요약 카드 · 차트 · 현금흐름표
-│  ├─ comparison/ 시나리오 A/B 비교 뷰
-│  └─ layout/     헤더 · 단일/비교 레이아웃
+│  ├─ ui/         재사용 프리미티브 (Card, NumberInput, Slider, InfoTooltip ...)
+│  │  └─ form/    react-hook-form 래퍼 (FormNumberInput/Select/Checkbox)
+│  ├─ forms/      BasicInfoForm · HousingForm(대출 슬라이더) · PolicyForm · ScenarioForm
+│  ├─ dashboard/  요약 카드 · 순자산/상환/레버리지 차트 · 현금흐름표
+│  ├─ comparison/ 시나리오 A/B 비교 요약
+│  └─ layout/     헤더
 └─ theme(tailwind.config) 디자인 토큰 (primary #2563eb 등)
+
+상태 관리는 react-hook-form(폼 3개: 공통 기본정보, 시나리오 A, B)이 담당하고,
+입력이 바뀌면 `toScenario`로 합쳐 `simulate`·`analyzeLeverage`를 즉시 재계산합니다.
 ```
 
 ## 디자인
