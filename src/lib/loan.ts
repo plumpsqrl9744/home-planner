@@ -43,8 +43,8 @@ export function calcPurchaseLoan(
   // DSR 한도: 심사금리(스트레스 가산) 기준 역산
   const reviewRate = purchase.loanRate + (policy.stressDsr ? POLICY.stressRateAdd : 0);
   const annualAllowance = common.annualIncome * POLICY.dsrLimit;
-  // 기존 신용대출 연간 원금상환 반영(100%)
-  const creditAnnualBurden = common.creditLoan * POLICY.creditLoanDsrFactor;
+  // 기존 신용대출은 원금을 만기로 분할한 연간 원금상환액을 DSR 분자에 반영(차원 일치).
+  const creditAnnualBurden = common.creditLoan / POLICY.creditLoanDsrMaturityYears;
   const availableAnnual = Math.max(0, annualAllowance - creditAnnualBurden);
   const dsrCap = loanFromMonthlyPayment(availableAnnual / 12, reviewRate, months);
 

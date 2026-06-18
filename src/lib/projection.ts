@@ -51,6 +51,7 @@ export interface ProjectionParams {
   residualCash: number;
   monthlySaving: number;
   etfRate: number;
+  lockedDeposit: number; // 거주에 묶인 보증금(명목 유지, 회수 가능 자산)
   years: readonly number[];
 }
 
@@ -64,6 +65,7 @@ export function buildProjection(params: ProjectionParams): ProjectionPoint[] {
     residualCash,
     monthlySaving,
     etfRate,
+    lockedDeposit,
     years,
   } = params;
 
@@ -71,7 +73,8 @@ export function buildProjection(params: ProjectionParams): ProjectionPoint[] {
     const realEstateValue = compound(realEstateValue0, realEstateGrowthRate, year);
     const financialAsset = accumulateSavings(residualCash, monthlySaving, etfRate, year);
     const remainingLoan = remainingPrincipal(loan, loanRate, loanMonths, year * 12);
-    const netWorth = realEstateValue + financialAsset - remainingLoan;
-    return { year, realEstateValue, financialAsset, remainingLoan, netWorth };
+    const deposit = lockedDeposit;
+    const netWorth = realEstateValue + financialAsset + deposit - remainingLoan;
+    return { year, realEstateValue, financialAsset, deposit, remainingLoan, netWorth };
   });
 }

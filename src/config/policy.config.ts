@@ -6,7 +6,9 @@ export const POLICY = {
     firstHome: { nonRegulated: 0.8, regulated: 0.6 },
     general: { nonRegulated: 0.7, regulated: 0.5 },
   },
-  creditLoanDsrFactor: 1.0, // 신용대출 원금 100% DSR 반영
+  // 신용대출은 원금 전액(100%)을 만기로 분할하여 연간 원금상환액을 DSR 분자에 반영.
+  // 실제 DSR 산정 관행과 동일(통상 5년 분할). 원금(stock)을 그대로 빼면 차원 오류.
+  creditLoanDsrMaturityYears: 5,
 } as const;
 
 export const PROJECTION_YEARS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;

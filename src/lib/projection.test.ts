@@ -43,7 +43,7 @@ describe('accumulateSavings', () => {
 });
 
 describe('buildProjection', () => {
-  it('각 연차 순자산 = 부동산 + 금융 − 잔여대출', () => {
+  it('각 연차 순자산 = 부동산 + 금융 + 보증금 − 잔여대출', () => {
     const points = buildProjection({
       realEstateValue0: 600_000_000,
       realEstateGrowthRate: 0.03,
@@ -53,13 +53,36 @@ describe('buildProjection', () => {
       residualCash: 50_000_000,
       monthlySaving: 1_000_000,
       etfRate: 0.07,
+      lockedDeposit: 0,
       years: [0, 5, 10],
     });
     expect(points).toHaveLength(3);
     for (const p of points) {
-      expect(p.netWorth).toBeCloseTo(p.realEstateValue + p.financialAsset - p.remainingLoan, 2);
+      expect(p.netWorth).toBeCloseTo(
+        p.realEstateValue + p.financialAsset + p.deposit - p.remainingLoan,
+        2,
+      );
     }
     expect(points[0].year).toBe(0);
     expect(points[2].realEstateValue).toBeCloseTo(600_000_000 * Math.pow(1.03, 10), 2);
+  });
+
+  it('보증금(lockedDeposit)은 명목 유지되어 모든 연차 순자산에 일정하게 포함된다', () => {
+    const points = buildProjection({
+      realEstateValue0: 0,
+      realEstateGrowthRate: 0.03,
+      loan: 0,
+      loanRate: 0,
+      loanMonths: 0,
+      residualCash: 0,
+      monthlySaving: 0,
+      etfRate: 0.05,
+      lockedDeposit: 300_000_000,
+      years: [0, 5, 10],
+    });
+    for (const p of points) {
+      expect(p.deposit).toBe(300_000_000);
+      expect(p.netWorth).toBeCloseTo(300_000_000, 2); // 부동산0+금융0+보증금3억-대출0
+    }
   });
 });

@@ -12,8 +12,6 @@ export interface HappyInput {
   deposit: number; // 보증금
   monthlyRent: number; // 월세
   managementFee: number; // 관리비(월)
-  depositAdjustRate: number; // 보증금 증액/감액 비율 (연, 소수: 0.05 = 5%)
-  interestRate: number; // 보증금 전환 이율 (연, 소수)
 }
 
 export interface JeonseInput {

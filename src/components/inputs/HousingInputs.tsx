@@ -30,8 +30,6 @@ export function HousingInputs({ id }: { id: 'A' | 'B' }) {
           <NumberInput label="보증금 (만원)" value={housing.deposit / W} step={100} onChange={(v) => update(id, { deposit: v * W })} />
           <NumberInput label="월세 (만원)" value={housing.monthlyRent / W} step={1} onChange={(v) => update(id, { monthlyRent: v * W })} />
           <NumberInput label="관리비 (만원)" value={housing.managementFee / W} step={1} onChange={(v) => update(id, { managementFee: v * W })} />
-          <NumberInput label="보증금 증감 비율 (%)" value={housing.depositAdjustRate * P} step={0.5} onChange={(v) => update(id, { depositAdjustRate: v / P })} />
-          <NumberInput label="보증금 전환 이율 (%)" value={housing.interestRate * P} step={0.1} onChange={(v) => update(id, { interestRate: v / P })} />
         </div>
       )}
 

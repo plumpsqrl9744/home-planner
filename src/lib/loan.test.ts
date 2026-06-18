@@ -87,12 +87,22 @@ describe('calcPurchaseLoan', () => {
     expect(rStress.dsrCap).toBeLessThan(rBase.dsrCap);
   });
 
-  it('신용대출이 있으면 DSR 한도가 줄어든다', () => {
+  it('신용대출이 있으면 DSR 한도가 줄어든다 (단, 원금을 만기 분할 반영하므로 0이 되지 않음)', () => {
     const policy: PolicyFlags = { isFirstHome: true, stressDsr: false, districtCode: 'mapo' };
     const withCredit: CommonInput = { ...common, creditLoan: 50_000_000 };
     const r0 = calcPurchaseLoan(purchase, common, policy);
     const r1 = calcPurchaseLoan(purchase, withCredit, policy);
     expect(r1.dsrCap).toBeLessThan(r0.dsrCap);
+    // 신용대출 5천만/5년 = 연 1천만 부담. 연소득 7천×40%=2,800만 중 1,800만 남음 → 한도 양수여야 함
+    expect(r1.dsrCap).toBeGreaterThan(0);
+  });
+
+  it('신용대출 연 분할부담이 DSR 허용액을 초과하면 한도 0', () => {
+    const policy: PolicyFlags = { isFirstHome: true, stressDsr: false, districtCode: 'mapo' };
+    // 신용대출 2억/5년 = 연 4천만 > 연소득 7천×40%=2,800만 → 한도 0
+    const heavy: CommonInput = { ...common, creditLoan: 200_000_000 };
+    const r = calcPurchaseLoan(purchase, heavy, policy);
+    expect(r.dsrCap).toBe(0);
   });
 
   it('월 원리금은 실제 금리 기준(스트레스 무관)으로 계산', () => {

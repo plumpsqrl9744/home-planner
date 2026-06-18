@@ -19,8 +19,6 @@ function defaultHousing(type: HousingType): HousingInput {
         deposit: 50_000_000,
         monthlyRent: 300_000,
         managementFee: 80_000,
-        depositAdjustRate: 0.05,
-        interestRate: 0.025,
       };
     case 'jeonse':
       return {
