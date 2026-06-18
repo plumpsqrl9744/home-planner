@@ -2,6 +2,7 @@ import { useScenarioStore } from '../../store/scenarioStore';
 import { NumberInput } from '../ui/NumberInput';
 import { SegmentedControl } from '../ui/SegmentedControl';
 import { HOUSING_LABELS } from '../../config/defaults.config';
+import { FIELD_HELP } from '../../config/fieldHelp.config';
 import type { HousingType } from '../../types/domain';
 
 const W = 10_000; // 만원 → 원
@@ -27,27 +28,27 @@ export function HousingInputs({ id }: { id: 'A' | 'B' }) {
 
       {housing.type === 'happy' && (
         <div className="grid grid-cols-2 gap-3">
-          <NumberInput label="보증금 (만원)" value={housing.deposit / W} step={100} onChange={(v) => update(id, { deposit: v * W })} />
-          <NumberInput label="월세 (만원)" value={housing.monthlyRent / W} step={1} onChange={(v) => update(id, { monthlyRent: v * W })} />
-          <NumberInput label="관리비 (만원)" value={housing.managementFee / W} step={1} onChange={(v) => update(id, { managementFee: v * W })} />
+          <NumberInput label="보증금 (만원)" help={FIELD_HELP.happyDeposit} value={housing.deposit / W} step={100} onChange={(v) => update(id, { deposit: v * W })} />
+          <NumberInput label="월세 (만원)" help={FIELD_HELP.monthlyRent} value={housing.monthlyRent / W} step={1} onChange={(v) => update(id, { monthlyRent: v * W })} />
+          <NumberInput label="관리비 (만원)" help={FIELD_HELP.managementFee} value={housing.managementFee / W} step={1} onChange={(v) => update(id, { managementFee: v * W })} />
         </div>
       )}
 
       {housing.type === 'jeonse' && (
         <div className="grid grid-cols-2 gap-3">
-          <NumberInput label="전세 보증금 (만원)" value={housing.deposit / W} step={100} onChange={(v) => update(id, { deposit: v * W })} />
-          <NumberInput label="전세자금대출 한도 (만원)" value={housing.loanLimit / W} step={100} onChange={(v) => update(id, { loanLimit: v * W })} />
-          <NumberInput label="전세대출 금리 (%)" value={housing.loanRate * P} step={0.1} onChange={(v) => update(id, { loanRate: v / P })} />
-          <NumberInput label="관리비 (만원)" value={housing.managementFee / W} step={1} onChange={(v) => update(id, { managementFee: v * W })} />
+          <NumberInput label="전세 보증금 (만원)" help={FIELD_HELP.jeonseDeposit} value={housing.deposit / W} step={100} onChange={(v) => update(id, { deposit: v * W })} />
+          <NumberInput label="전세자금대출 한도 (만원)" help={FIELD_HELP.loanLimit} value={housing.loanLimit / W} step={100} onChange={(v) => update(id, { loanLimit: v * W })} />
+          <NumberInput label="전세대출 금리 (%)" help={FIELD_HELP.jeonseLoanRate} value={housing.loanRate * P} step={0.1} onChange={(v) => update(id, { loanRate: v / P })} />
+          <NumberInput label="관리비 (만원)" help={FIELD_HELP.managementFee} value={housing.managementFee / W} step={1} onChange={(v) => update(id, { managementFee: v * W })} />
         </div>
       )}
 
       {housing.type === 'purchase' && (
         <div className="grid grid-cols-2 gap-3">
-          <NumberInput label="주택 가격 (만원)" value={housing.price / W} step={100} onChange={(v) => update(id, { price: v * W })} />
-          <NumberInput label="주담대 금리 (%)" value={housing.loanRate * P} step={0.1} onChange={(v) => update(id, { loanRate: v / P })} />
-          <NumberInput label="대출 만기 (년)" value={housing.loanMaturityYears} step={1} onChange={(v) => update(id, { loanMaturityYears: v })} />
-          <NumberInput label="관리비 (만원)" value={housing.managementFee / W} step={1} onChange={(v) => update(id, { managementFee: v * W })} />
+          <NumberInput label="주택 가격 (만원)" help={FIELD_HELP.price} value={housing.price / W} step={100} onChange={(v) => update(id, { price: v * W })} />
+          <NumberInput label="주담대 금리 (%)" help={FIELD_HELP.purchaseLoanRate} value={housing.loanRate * P} step={0.1} onChange={(v) => update(id, { loanRate: v / P })} />
+          <NumberInput label="대출 만기 (년)" help={FIELD_HELP.loanMaturityYears} value={housing.loanMaturityYears} step={1} onChange={(v) => update(id, { loanMaturityYears: v })} />
+          <NumberInput label="관리비 (만원)" help={FIELD_HELP.managementFee} value={housing.managementFee / W} step={1} onChange={(v) => update(id, { managementFee: v * W })} />
         </div>
       )}
     </div>

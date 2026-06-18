@@ -28,7 +28,10 @@ export interface ProjectionPoint {
   netWorth: number; // 순자산
 }
 
+import type { HousingType } from './domain';
+
 export interface SimulationResult {
+  housingType: HousingType; // 표시 분기용
   loan: LoanResult;
   tax: TaxResult;
   cashflow: CashflowResult;

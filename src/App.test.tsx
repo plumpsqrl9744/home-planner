@@ -25,4 +25,10 @@ describe('App 통합 렌더', () => {
     expect(screen.getByText('비교 요약')).toBeInTheDocument();
     expect(screen.getByText('시나리오 입력 (A / B)')).toBeInTheDocument();
   });
+
+  it('입력 항목에 도움말(?) 아이콘이 렌더된다', () => {
+    render(<App />);
+    const helps = screen.getAllByRole('button', { name: '설명 보기' });
+    expect(helps.length).toBeGreaterThan(0);
+  });
 });

@@ -4,6 +4,7 @@ import { Select } from '../ui/Select';
 import { Badge } from '../ui/Badge';
 import { DISTRICTS, getDistrict } from '../../config/districts.config';
 import { POLICY } from '../../config/policy.config';
+import { FIELD_HELP } from '../../config/fieldHelp.config';
 import { formatPercent } from '../../lib/format';
 
 export function PolicyFilters({ id }: { id: 'A' | 'B' }) {
@@ -19,6 +20,7 @@ export function PolicyFilters({ id }: { id: 'A' | 'B' }) {
     <div className="space-y-4">
       <Select
         label="자치구"
+        help={FIELD_HELP.district}
         value={policy.districtCode}
         options={districtOptions}
         onChange={(v) => update(id, { districtCode: v })}
@@ -33,12 +35,14 @@ export function PolicyFilters({ id }: { id: 'A' | 'B' }) {
         <div className="space-y-3 pt-1">
           <Checkbox
             label="생애최초 주택구매"
+            help={FIELD_HELP.isFirstHome}
             description="체크 시 비규제 LTV 80% 적용(규제지역은 한도 별도)"
             checked={policy.isFirstHome}
             onChange={(c) => update(id, { isFirstHome: c })}
           />
           <Checkbox
             label="스트레스 DSR 적용"
+            help={FIELD_HELP.stressDsr}
             description={`심사 금리 +${stressAdd} 가산하여 대출 한도 축소`}
             checked={policy.stressDsr}
             onChange={(c) => update(id, { stressDsr: c })}

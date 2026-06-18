@@ -80,5 +80,5 @@ export function simulate(scenario: Scenario): SimulationResult {
     years: PROJECTION_YEARS,
   });
 
-  return { loan, tax, cashflow, projection, residualCash, lockedDeposit, shortfall };
+  return { housingType: housing.type, loan, tax, cashflow, projection, residualCash, lockedDeposit, shortfall };
 }

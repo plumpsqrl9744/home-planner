@@ -1,3 +1,5 @@
+import { InfoTooltip } from './InfoTooltip';
+
 interface NumberInputProps {
   label: string;
   value: number;
@@ -5,12 +7,16 @@ interface NumberInputProps {
   suffix?: string;
   step?: number;
   min?: number;
+  help?: string;
 }
 
-export function NumberInput({ label, value, onChange, suffix, step = 1, min = 0 }: NumberInputProps) {
+export function NumberInput({ label, value, onChange, suffix, step = 1, min = 0, help }: NumberInputProps) {
   return (
     <label className="block">
-      <span className="block text-xs font-medium text-neutral-500 mb-1">{label}</span>
+      <span className="flex items-center text-xs font-medium text-neutral-500 mb-1">
+        {label}
+        {help && <InfoTooltip text={help} />}
+      </span>
       <div className="flex items-center rounded-lg border border-neutral-200 focus-within:border-primary-600 focus-within:ring-1 focus-within:ring-primary-600 bg-white">
         <input
           type="number"
