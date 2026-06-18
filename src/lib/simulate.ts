@@ -9,6 +9,7 @@ import type { LoanResult, TaxResult, SimulationResult } from '../types/result';
 const EMPTY_LOAN: LoanResult = {
   ltvCap: 0,
   dsrCap: 0,
+  maxLoan: 0,
   finalLoan: 0,
   monthlyPayment: 0,
   appliedLtvRatio: 0,

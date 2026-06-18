@@ -1,7 +1,8 @@
 export interface LoanResult {
   ltvCap: number; // LTV 기준 한도
   dsrCap: number; // DSR 기준 한도
-  finalLoan: number; // min(ltvCap, dsrCap)
+  maxLoan: number; // 받을 수 있는 최대 = min(ltvCap, dsrCap)
+  finalLoan: number; // 실제 적용 대출액 = min(희망 대출액, maxLoan)
   monthlyPayment: number; // 실제 금리 기준 월 원리금
   appliedLtvRatio: number; // 적용된 LTV 비율
   reviewRate: number; // DSR 심사 금리 (스트레스 반영)

@@ -12,6 +12,7 @@ describe('calcInitialCash', () => {
   const purchase: PurchaseInput = {
     type: 'purchase',
     price: 600_000_000,
+    desiredLoan: 480_000_000,
     loanRate: 0.04,
     loanMaturityYears: 30,
     managementFee: 0,

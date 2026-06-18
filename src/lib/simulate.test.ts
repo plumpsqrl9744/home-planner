@@ -5,7 +5,7 @@ import type { Scenario } from '../types/domain';
 const base: Scenario = {
   label: 'A',
   common: { cash: 200_000_000, annualIncome: 80_000_000, monthlyLiving: 2_000_000, creditLoan: 0 },
-  housing: { type: 'purchase', price: 600_000_000, loanRate: 0.04, loanMaturityYears: 30, managementFee: 150_000 },
+  housing: { type: 'purchase', price: 600_000_000, desiredLoan: 480_000_000, loanRate: 0.04, loanMaturityYears: 30, managementFee: 150_000 },
   policy: { isFirstHome: true, stressDsr: false, districtCode: 'mapo' },
   invest: { etfReturnRate: 0.07, realEstateGrowthRate: 0.03 },
 };
@@ -97,7 +97,7 @@ describe('simulate - 자금 부족(shortfall)', () => {
   const broke: Scenario = {
     ...base,
     common: { cash: 50_000_000, annualIncome: 60_000_000, monthlyLiving: 2_000_000, creditLoan: 0 },
-    housing: { type: 'purchase', price: 600_000_000, loanRate: 0.04, loanMaturityYears: 30, managementFee: 0 },
+    housing: { type: 'purchase', price: 600_000_000, desiredLoan: 480_000_000, loanRate: 0.04, loanMaturityYears: 30, managementFee: 0 },
   };
   it('초기 필요현금 > 보유현금이면 shortfall 양수', () => {
     const r = simulate(broke);

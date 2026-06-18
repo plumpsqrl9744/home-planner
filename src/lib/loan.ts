@@ -48,8 +48,10 @@ export function calcPurchaseLoan(
   const availableAnnual = Math.max(0, annualAllowance - creditAnnualBurden);
   const dsrCap = loanFromMonthlyPayment(availableAnnual / 12, reviewRate, months);
 
-  const finalLoan = Math.min(ltvCap, dsrCap);
+  // 받을 수 있는 최대는 LTV·DSR 중 작은 값. 실제 대출은 희망액을 [0, maxLoan]으로 클램프.
+  const maxLoan = Math.min(ltvCap, dsrCap);
+  const finalLoan = Math.min(Math.max(0, purchase.desiredLoan), maxLoan);
   const monthlyPayment = monthlyAmortization(finalLoan, purchase.loanRate, months);
 
-  return { ltvCap, dsrCap, finalLoan, monthlyPayment, appliedLtvRatio, reviewRate };
+  return { ltvCap, dsrCap, maxLoan, finalLoan, monthlyPayment, appliedLtvRatio, reviewRate };
 }

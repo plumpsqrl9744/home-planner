@@ -63,19 +63,37 @@ describe('calcPurchaseLoan', () => {
     monthlyLiving: 2_000_000,
     creditLoan: 0,
   };
+  // desiredLoan을 집값(상한 이상)으로 두면 maxLoan으로 클램프되어 "최대 대출" 동작
   const purchase: PurchaseInput = {
     type: 'purchase',
     price: 600_000_000,
+    desiredLoan: 600_000_000,
     loanRate: 0.04,
     loanMaturityYears: 30,
     managementFee: 0,
   };
 
-  it('확정 대출은 LTV와 DSR 중 작은 값', () => {
+  it('maxLoan은 LTV와 DSR 중 작은 값, 희망액이 상한 이상이면 finalLoan=maxLoan', () => {
     const policy: PolicyFlags = { isFirstHome: true, stressDsr: false, districtCode: 'mapo' };
     const r = calcPurchaseLoan(purchase, common, policy);
-    expect(r.finalLoan).toBe(Math.min(r.ltvCap, r.dsrCap));
+    expect(r.maxLoan).toBe(Math.min(r.ltvCap, r.dsrCap));
+    expect(r.finalLoan).toBe(r.maxLoan);
     expect(r.ltvCap).toBe(600_000_000 * 0.8);
+  });
+
+  it('희망 대출액이 상한보다 작으면 그대로 적용된다 (레버리지 조절)', () => {
+    const policy: PolicyFlags = { isFirstHome: true, stressDsr: false, districtCode: 'mapo' };
+    const partial: PurchaseInput = { ...purchase, desiredLoan: 200_000_000 };
+    const r = calcPurchaseLoan(partial, common, policy);
+    expect(r.finalLoan).toBe(200_000_000);
+    expect(r.finalLoan).toBeLessThan(r.maxLoan);
+  });
+
+  it('희망 대출액이 상한을 넘으면 상한으로 클램프된다', () => {
+    const policy: PolicyFlags = { isFirstHome: true, stressDsr: false, districtCode: 'mapo' };
+    const over: PurchaseInput = { ...purchase, desiredLoan: 999_000_000_000 };
+    const r = calcPurchaseLoan(over, common, policy);
+    expect(r.finalLoan).toBe(r.maxLoan);
   });
 
   it('스트레스 DSR 적용 시 심사금리가 가산되어 DSR 한도가 줄어든다', () => {
